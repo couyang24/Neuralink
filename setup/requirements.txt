@@ -1,8 +1,11 @@
 black
+flake8
 h5py
+isort
 matplotlib
 numpy
 pandas
 Pillow
+pre-commit
 scipy
 sklearn
