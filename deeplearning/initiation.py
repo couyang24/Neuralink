@@ -1,6 +1,7 @@
 """Module contains initiation functions"""
-from deeplearning.base import Baseinitialize
 import numpy as np
+
+from deeplearning.base import Baseinitialize
 
 
 class ZeroInitialize(Baseinitialize):

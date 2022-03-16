@@ -1,6 +1,8 @@
 """Testing propagate"""
-from deeplearning.propagation import LogitPropagate, ForwardPropagate, BackwardPropagate
 import numpy as np
+
+from deeplearning.propagation import (BackwardPropagate, ForwardPropagate,
+                                      LogitPropagate)
 
 
 def test_propagate():

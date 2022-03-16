@@ -1,6 +1,7 @@
 """Module contains cost functions"""
-from deeplearning.base import Basecost
 import numpy as np
+
+from deeplearning.base import Basecost
 
 
 class Cost(Basecost):

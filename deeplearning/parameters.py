@@ -1,6 +1,7 @@
 """Module contains update parameters functions"""
-from deeplearning.base import Baseparams
 import copy
+
+from deeplearning.base import Baseparams
 
 
 class Params(Baseparams):

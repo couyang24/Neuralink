@@ -1,6 +1,7 @@
 """test cost"""
-from deeplearning.cost import Cost
 import numpy as np
+
+from deeplearning.cost import Cost
 
 
 def test_compute_cost():

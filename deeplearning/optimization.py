@@ -1,8 +1,10 @@
 """Module contains optimization functions"""
 import copy
+
+import numpy as np
+
 from deeplearning.base import Baseoptimize
 from deeplearning.propagation import LogitPropagate
-import numpy as np
 
 
 class LogitOptimize(Baseoptimize):

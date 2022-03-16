@@ -1,6 +1,7 @@
 """Testing modelling"""
-from deeplearning.modelling import LogitModel, NNModel
 import numpy as np
+
+from deeplearning.modelling import LogitModel, NNModel
 
 
 def test_logit_model():

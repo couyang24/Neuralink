@@ -1,5 +1,6 @@
 """Module implements the abstract base deeplearning model"""
 from abc import ABC, abstractmethod
+
 import numpy as np
 
 

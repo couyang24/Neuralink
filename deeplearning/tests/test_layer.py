@@ -1,6 +1,7 @@
 """Testing layer"""
-from deeplearning.layer import Layer
 import numpy as np
+
+from deeplearning.layer import Layer
 
 
 def test_layer():

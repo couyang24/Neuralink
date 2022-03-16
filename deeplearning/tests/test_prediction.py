@@ -1,6 +1,7 @@
 """Testing prediction"""
-from deeplearning.prediction import LogitPredict
 import numpy as np
+
+from deeplearning.prediction import LogitPredict
 
 
 def test_predict():

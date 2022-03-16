@@ -1,6 +1,7 @@
 """test update parameters"""
-from deeplearning.parameters import Params
 import numpy as np
+
+from deeplearning.parameters import Params
 
 
 def test_update_params():

@@ -1,7 +1,8 @@
 """Module contains propagate functions"""
-from deeplearning.base import Basepropagate
-from deeplearning.activation import Sigmoid, Tanh
 import numpy as np
+
+from deeplearning.activation import Sigmoid, Tanh
+from deeplearning.base import Basepropagate
 
 
 class LogitPropagate(Basepropagate):

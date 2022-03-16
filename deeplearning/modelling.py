@@ -1,13 +1,14 @@
 """Module contains modelling objects"""
+import numpy as np
+
 from deeplearning.base import Basemodel
 from deeplearning.cost import Cost
-from deeplearning.initiation import ZeroInitialize, RandInitialize
+from deeplearning.initiation import RandInitialize, ZeroInitialize
 from deeplearning.layer import Layer
 from deeplearning.optimization import LogitOptimize
 from deeplearning.parameters import Params
 from deeplearning.prediction import LogitPredict
-from deeplearning.propagation import ForwardPropagate, BackwardPropagate
-import numpy as np
+from deeplearning.propagation import BackwardPropagate, ForwardPropagate
 
 
 class LogitModel(Basemodel):

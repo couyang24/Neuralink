@@ -1,6 +1,7 @@
 """Module contains activation functions"""
-from deeplearning.base import Baseactivate
 import numpy as np
+
+from deeplearning.base import Baseactivate
 
 
 class Sigmoid(Baseactivate):

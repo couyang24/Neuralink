@@ -1,6 +1,7 @@
 """test initiation"""
-from deeplearning.initiation import ZeroInitialize, RandInitialize
 import numpy as np
+
+from deeplearning.initiation import RandInitialize, ZeroInitialize
 
 
 def test_zeroinitialize():
