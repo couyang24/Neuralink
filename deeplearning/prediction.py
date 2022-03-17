@@ -1,7 +1,8 @@
 """Module contains predicition functions"""
-from deeplearning.base import Basepredict
-from deeplearning.activation import Sigmoid
 import numpy as np
+
+from deeplearning.activation import Sigmoid
+from deeplearning.base import Basepredict
 
 
 class LogitPredict(Basepredict):

@@ -1,6 +1,7 @@
 """test activation"""
-from deeplearning.activation import Sigmoid, Tanh, Relu
 import numpy as np
+
+from deeplearning.activation import Relu, Sigmoid, Tanh
 
 
 def test_sigmoid():

@@ -1,12 +1,17 @@
 """Module contains modelling objects"""
-from deeplearning.base import Basemodel
-from deeplearning.initiation import ZeroInitialize
-from deeplearning.optimization import LogitOptimize
-from deeplearning.prediction import LogitPredict
 import numpy as np
 
+from deeplearning.base import Basemodel
+from deeplearning.cost import Cost
+from deeplearning.initiation import RandInitialize, ZeroInitialize
+from deeplearning.layer import Layer
+from deeplearning.optimization import LogitOptimize
+from deeplearning.parameters import Parameters
+from deeplearning.prediction import LogitPredict
+from deeplearning.propagation import BackwardPropagate, ForwardPropagate
 
-class Model(Basemodel):
+
+class LogitModel(Basemodel):
     def train(
         self, X_train, Y_train, num_iterations=2000, learning_rate=0.5, print_cost=False
     ):
@@ -80,3 +85,60 @@ class Model(Basemodel):
         }
 
         return d
+
+
+class NNModel(Basemodel):
+    def train(self, X, Y, n_h, num_iterations=10000, print_cost=False, seed=3):
+        """
+        Arguments:
+        X -- dataset of shape (2, number of examples)
+        Y -- labels of shape (1, number of examples)
+        n_h -- size of the hidden layer
+        num_iterations -- Number of iterations in gradient descent loop
+        print_cost -- if True, print the cost every 1000 iterations
+        """
+
+        np.random.seed(seed)
+        n_x = Layer().determine(X, Y)[0]
+        n_y = Layer().determine(X, Y)[2]
+
+        # Initialize parameters
+        parameters = RandInitialize().initiate(n_x, n_h, n_y, seed)
+
+        # Loop (gradient descent)
+        for i in range(0, num_iterations):
+
+            # Forward propagation. Inputs: "X, parameters". Outputs: "A2, cache".
+            A2, cache = ForwardPropagate().propagate(X, parameters)
+
+            # Cost function. Inputs: "A2, Y". Outputs: "cost".
+            cost = Cost().compute(A2, Y)
+
+            # Backpropagation. Inputs: "parameters, cache, X, Y". Outputs: "grads".
+            grads = BackwardPropagate().propagate(parameters, cache, X, Y)
+
+            # Gradient descent parameter update. Inputs: "parameters, grads". Outputs: "parameters".
+            parameters = Parameters().update(parameters, grads, learning_rate=1.2)
+
+            # Print the cost every 1000 iterations
+            if print_cost and i % 1000 == 0:
+                print("Cost after iteration %i: %f" % (i, cost))
+
+        self.parameters = parameters
+
+    def predict(self, X):
+        """
+        Using the learned parameters, predicts a class for each example in X
+
+        Arguments:
+        X -- input data of size (n_x, m)
+
+        Returns
+        predictions -- vector of predictions of our model (red: 0 / blue: 1)
+        """
+
+        # Computes probabilities using forward propagation, and classifies to 0/1 using 0.5 as the threshold.
+        A2, cache = ForwardPropagate().propagate(X, self.parameters)
+        predictions = A2 > 0.5
+
+        return predictions

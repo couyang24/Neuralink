@@ -1,9 +1,12 @@
 """test update parameters"""
-from deeplearning.parameters import Params
 import numpy as np
 
+from deeplearning.parameters import Parameters
 
-def test_update_params():
+from .utils import multiple_test
+
+
+def test_update_parameters1():
     parameters = {
         "W1": np.array(
             [
@@ -59,7 +62,7 @@ def test_update_params():
         "b2": expected_b2,
     }
 
-    output = Params().update(parameters, grads)
+    output = Parameters().update(parameters, grads)
 
     assert (
         type(output["W1"]) == np.ndarray
@@ -83,3 +86,58 @@ def test_update_params():
     assert np.allclose(output["b1"], expected_output["b1"]), "Wrong values for b1"
     assert np.allclose(output["W2"], expected_output["W2"]), "Wrong values for W2"
     assert np.allclose(output["b2"], expected_output["b2"]), "Wrong values for b2"
+
+
+def test_update_parameters2():
+    np.random.seed(2)
+    W1 = np.random.randn(3, 4)
+    b1 = np.random.randn(3, 1)
+    W2 = np.random.randn(1, 3)
+    b2 = np.random.randn(1, 1)
+    parameters = {"W1": W1, "b1": b1, "W2": W2, "b2": b2}
+    np.random.seed(3)
+    dW1 = np.random.randn(3, 4)
+    db1 = np.random.randn(3, 1)
+    dW2 = np.random.randn(1, 3)
+    db2 = np.random.randn(1, 1)
+    grads = {"dW1": dW1, "db1": db1, "dW2": dW2, "db2": db2}
+    learning_rate = 0.1
+    expected_W1 = np.array(
+        [
+            [-0.59562069, -0.09991781, -2.14584584, 1.82662008],
+            [-1.76569676, -0.80627147, 0.51115557, -1.18258802],
+            [-1.0535704, -0.86128581, 0.68284052, 2.20374577],
+        ]
+    )
+    expected_b1 = np.array([[-0.04659241], [-1.28888275], [0.53405496]])
+    expected_W2 = np.array([[-0.55569196, 0.0354055, 1.32964895]])
+    expected_b2 = np.array([[-0.84610769]])
+    expected_output = {
+        "W1": expected_W1,
+        "b1": expected_b1,
+        "W2": expected_W2,
+        "b2": expected_b2,
+    }
+
+    test_cases = [
+        {
+            "name": "datatype_check",
+            "input": [parameters, grads, learning_rate],
+            "expected": expected_output,
+            "error": "Data type mismatch",
+        },
+        {
+            "name": "shape_check",
+            "input": [parameters, grads, learning_rate],
+            "expected": expected_output,
+            "error": "Wrong shape",
+        },
+        {
+            "name": "equation_output_check",
+            "input": [parameters, grads, 0.1],
+            "expected": expected_output,
+            "error": "Wrong output",
+        },
+    ]
+
+    multiple_test(test_cases, Parameters().update)

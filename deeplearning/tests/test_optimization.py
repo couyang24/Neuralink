@@ -1,6 +1,7 @@
 """Testing optimization"""
-from deeplearning.optimization import LogitOptimize
 import numpy as np
+
+from deeplearning.optimization import LogitOptimize
 
 
 def test_optimize():
