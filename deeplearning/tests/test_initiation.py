@@ -1,7 +1,9 @@
 """test initiation"""
 import numpy as np
 
-from deeplearning.initiation import RandInitialize, ZeroInitialize
+from deeplearning.initiation import RandDeepInitialize, RandInitialize, ZeroInitialize
+
+from .utils import multiple_test
 
 
 def test_zeroinitialize():
@@ -63,7 +65,7 @@ def test_randinitialize():
         "b2": np.array([[0.0], [0.0]]),
     }
 
-    parameters = RandInitialize().initiate(n_x, n_h, n_y)
+    parameters = RandInitialize().initiate(n_x, n_h, n_y, 2)
 
     assert (
         type(parameters["W1"]) == np.ndarray
@@ -87,3 +89,85 @@ def test_randinitialize():
     assert np.allclose(parameters["b1"], expected_output["b1"]), "Wrong values for b1"
     assert np.allclose(parameters["W2"], expected_output["W2"]), "Wrong values for W2"
     assert np.allclose(parameters["b2"], expected_output["b2"]), "Wrong values for b2"
+
+
+def test_randinitialize2():
+    np.random.seed(1)
+    n_x, n_h, n_y = 3, 2, 1
+    expected_W1 = np.array(
+        [[0.01624345, -0.00611756, -0.00528172], [-0.01072969, 0.00865408, -0.02301539]]
+    )
+    expected_b1 = np.array([[0.0], [0.0]])
+    expected_W2 = np.array([[0.01744812, -0.00761207]])
+    expected_b2 = np.array([[0.0]])
+    expected_output = {
+        "W1": expected_W1,
+        "b1": expected_b1,
+        "W2": expected_W2,
+        "b2": expected_b2,
+    }
+    test_cases = [
+        {
+            "name": "datatype_check",
+            "input": [n_x, n_h, n_y],
+            "expected": expected_output,
+            "error": "Datatype mismatch.",
+        },
+        {
+            "name": "equation_output_check",
+            "input": [n_x, n_h, n_y],
+            "expected": expected_output,
+            "error": "Wrong output",
+        },
+    ]
+
+    multiple_test(test_cases, RandInitialize().initiate)
+
+
+def test_randdeepinitialize():
+    layer_dims = [5, 4, 3]
+    expected_W1 = np.array(
+        [
+            [0.01788628, 0.0043651, 0.00096497, -0.01863493, -0.00277388],
+            [-0.00354759, -0.00082741, -0.00627001, -0.00043818, -0.00477218],
+            [-0.01313865, 0.00884622, 0.00881318, 0.01709573, 0.00050034],
+            [-0.00404677, -0.0054536, -0.01546477, 0.00982367, -0.01101068],
+        ]
+    )
+    expected_b1 = np.array([[0.0], [0.0], [0.0], [0.0]])
+    expected_W2 = np.array(
+        [
+            [-0.01185047, -0.0020565, 0.01486148, 0.00236716],
+            [-0.01023785, -0.00712993, 0.00625245, -0.00160513],
+            [-0.00768836, -0.00230031, 0.00745056, 0.01976111],
+        ]
+    )
+    expected_b2 = np.array([[0.0], [0.0], [0.0]])
+    expected_output = {
+        "W1": expected_W1,
+        "b1": expected_b1,
+        "W2": expected_W2,
+        "b2": expected_b2,
+    }
+    test_cases = [
+        {
+            "name": "datatype_check",
+            "input": [layer_dims],
+            "expected": expected_output,
+            "error": "Datatype mismatch",
+        },
+        {
+            "name": "shape_check",
+            "input": [layer_dims],
+            "expected": expected_output,
+            "error": "Wrong shape",
+        },
+        {
+            "name": "equation_output_check",
+            "input": [layer_dims],
+            "expected": expected_output,
+            "error": "Wrong output",
+        },
+    ]
+
+    multiple_test(test_cases, RandDeepInitialize().initiate)

@@ -6,7 +6,7 @@ from deeplearning.cost import Cost
 from deeplearning.initiation import RandInitialize, ZeroInitialize
 from deeplearning.layer import Layer
 from deeplearning.optimization import LogitOptimize
-from deeplearning.parameters import Params
+from deeplearning.parameters import Parameters
 from deeplearning.prediction import LogitPredict
 from deeplearning.propagation import BackwardPropagate, ForwardPropagate
 
@@ -88,7 +88,7 @@ class LogitModel(Basemodel):
 
 
 class NNModel(Basemodel):
-    def train(self, X, Y, n_h, num_iterations=10000, print_cost=False):
+    def train(self, X, Y, n_h, num_iterations=10000, print_cost=False, seed=3):
         """
         Arguments:
         X -- dataset of shape (2, number of examples)
@@ -98,12 +98,12 @@ class NNModel(Basemodel):
         print_cost -- if True, print the cost every 1000 iterations
         """
 
-        np.random.seed(3)
+        np.random.seed(seed)
         n_x = Layer().determine(X, Y)[0]
         n_y = Layer().determine(X, Y)[2]
 
         # Initialize parameters
-        parameters = RandInitialize().initiate(n_x, n_h, n_y)
+        parameters = RandInitialize().initiate(n_x, n_h, n_y, seed)
 
         # Loop (gradient descent)
         for i in range(0, num_iterations):
@@ -118,7 +118,7 @@ class NNModel(Basemodel):
             grads = BackwardPropagate().propagate(parameters, cache, X, Y)
 
             # Gradient descent parameter update. Inputs: "parameters, grads". Outputs: "parameters".
-            parameters = Params().update(parameters, grads, learning_rate=1.2)
+            parameters = Parameters().update(parameters, grads, learning_rate=1.2)
 
             # Print the cost every 1000 iterations
             if print_cost and i % 1000 == 0:
