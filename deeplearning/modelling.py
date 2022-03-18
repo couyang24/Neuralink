@@ -3,12 +3,17 @@ import numpy as np
 
 from deeplearning.base import Basemodel
 from deeplearning.cost import Cost
-from deeplearning.initiation import RandInitialize, ZeroInitialize
+from deeplearning.initiation import RandDeepInitialize, RandInitialize, ZeroInitialize
 from deeplearning.layer import Layer
 from deeplearning.optimization import LogitOptimize
 from deeplearning.parameters import Parameters
 from deeplearning.prediction import LogitPredict
-from deeplearning.propagation import BackwardPropagate, ForwardPropagate
+from deeplearning.propagation import (
+    BackwardPropagate,
+    ForwardPropagate,
+    LinearModelBackward,
+    LinearModelForward,
+)
 
 
 class LogitModel(Basemodel):
@@ -142,3 +147,94 @@ class NNModel(Basemodel):
         predictions = A2 > 0.5
 
         return predictions
+
+
+class DeepNNModel(Basemodel):
+    def train(
+        self,
+        X,
+        Y,
+        layers_dims,
+        learning_rate=0.0075,
+        num_iterations=3000,
+        print_cost=False,
+        seed=1,
+        deep=True,
+    ):
+        """
+        Implements a deep neural network: LINEAR->RELU->LINEAR->SIGMOID.
+
+        Arguments:
+        X -- input data, of shape (n_x, number of examples)
+        Y -- true "label" vector (containing 1 if cat, 0 if non-cat), of shape (1, number of examples)
+        layers_dims -- dimensions of the layers (n_x, n_h, n_y)
+        num_iterations -- number of iterations of the optimization loop
+        learning_rate -- learning rate of the gradient descent update rule
+        print_cost -- If set to True, this will print the cost every 100 iterations
+
+        Returns:
+        parameters -- a dictionary containing W1, W2, b1, and b2
+        """
+
+        np.random.seed(seed)
+        costs = []
+
+        # Initialize parameters dictionary, by calling one of the functions you'd previously implemented
+        parameters = RandDeepInitialize().initiate(layers_dims, seed=seed, deep=deep)
+
+        # Loop (gradient descent)
+        for i in range(num_iterations):
+            AL, caches = LinearModelForward().propagate(X, parameters)
+            cost = Cost().compute(AL, Y, deep=True)
+            grads = LinearModelBackward().propagate(AL, Y, caches)
+            parameters = Parameters().update(
+                parameters, grads, learning_rate=learning_rate
+            )
+
+            # Print the cost every 100 iterations
+            if print_cost and i % 100 == 0 or i == num_iterations - 1:
+                print("Cost after iteration {}: {}".format(i, np.squeeze(cost)))
+            if i % 100 == 0 or i == num_iterations:
+                costs.append(cost)
+
+        self.parameters = parameters
+
+        return parameters, costs
+
+    def predict(self, X, y=None, parameters=None):
+        """
+        This function is used to predict the results of a  L-layer neural network.
+
+        Arguments:
+        X -- data set of examples you would like to label
+        parameters -- parameters of the trained model
+
+        Returns:
+        p -- predictions for the given dataset X
+        """
+        if (parameters is None) and (self.parameters is not None):
+            parameters = self.parameters
+        elif (parameters is None) and (self.parameters is None):
+            raise AttributeError(f"parameters is not provided.")
+
+        m = X.shape[1]
+        n = len(parameters) // 2  # number of layers in the neural network
+        p = np.zeros((1, m))
+
+        # Forward propagation
+        probas, caches = LinearModelForward().propagate(X, parameters)
+
+        # convert probas to 0/1 predictions
+        for i in range(0, probas.shape[1]):
+            if probas[0, i] > 0.5:
+                p[0, i] = 1
+            else:
+                p[0, i] = 0
+
+        # print results
+        # print ("predictions: " + str(p))
+        # print ("true labels: " + str(y))
+        if y is not None:
+            print("Accuracy: " + str(np.sum((p == y) / m)))
+
+        return p

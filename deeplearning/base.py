@@ -78,6 +78,7 @@ class Baselayer(ABC):
 
 class Basemodel(ABC):
     def __init__(self):
+        self.parameters = None
         super().__init__()
 
     @abstractmethod

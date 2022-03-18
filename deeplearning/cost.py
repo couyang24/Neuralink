@@ -5,7 +5,7 @@ from deeplearning.base import Basecost
 
 
 class Cost(Basecost):
-    def compute(self, AL, Y):
+    def compute(self, AL, Y, deep=False):
         """
         Computes the cross-entropy cost
 
@@ -23,7 +23,12 @@ class Cost(Basecost):
         logprobs = np.multiply(np.log(AL), Y) + np.multiply(np.log(1 - AL), 1 - Y)
         cost = -1 / m * np.sum(logprobs)
 
-        cost = float(np.squeeze(cost))  # makes sure cost is the dimension we expect.
+        if deep:
+            cost = np.array(np.squeeze(cost))
+        else:
+            cost = float(
+                np.squeeze(cost)
+            )  # makes sure cost is the dimension we expect.
         # E.g., turns [[17]] into 17
 
         return cost
