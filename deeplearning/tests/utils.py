@@ -139,6 +139,8 @@ def multiple_test(test_cases, target):
     for test_case in test_cases:
         try:
             target_answer = target(*test_case["input"])
+            print(target_answer)
+            print(test_case["expected"])
             if test_case["name"] == "datatype_check":
                 success += datatype_check(
                     test_case["expected"], target_answer, test_case["error"]

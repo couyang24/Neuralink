@@ -50,7 +50,7 @@ class RandInitialize(Baseinitialize):
 
 
 class RandDeepInitialize(Baseinitialize):
-    def initiate(self, layer_dims):
+    def initiate(self, layer_dims, seed=3, deep=False):
         """
         Arguments:
         layer_dims -- python array (list) containing the dimensions of each layer in our network
@@ -61,13 +61,17 @@ class RandDeepInitialize(Baseinitialize):
                         bl -- bias vector of shape (layer_dims[l], 1)
         """
 
-        np.random.seed(3)
+        np.random.seed(seed)
         parameters = {}
         L = len(layer_dims)  # number of layers in the network
+        demoninator = 100
 
         for l in range(1, L):
+            if deep:
+                demoninator = np.sqrt(layer_dims[l - 1])
+
             parameters["W" + str(l)] = (
-                np.random.randn(layer_dims[l], layer_dims[l - 1]) * 0.01
+                np.random.randn(layer_dims[l], layer_dims[l - 1]) / demoninator
             )
             parameters["b" + str(l)] = np.zeros((layer_dims[l], 1))
 
