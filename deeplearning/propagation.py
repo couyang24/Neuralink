@@ -25,13 +25,14 @@ def _linear_forward(A, W, b):
     return Z, cache
 
 
-def _linear_backward(dZ, cache):
+def _linear_backward(dZ, cache, lambd=None):
     """
     Implement the linear portion of backward propagation for a single layer (layer l)
 
     Arguments:
     dZ -- Gradient of the cost with respect to the linear output (of current layer l)
     cache -- tuple of values (A_prev, W, b) coming from the forward propagation in the current layer
+    lambd
 
     Returns:
     dA_prev -- Gradient of the cost with respect to the activation (of the previous layer l-1), same shape as A_prev
@@ -41,7 +42,12 @@ def _linear_backward(dZ, cache):
     A_prev, W, b = cache
     m = A_prev.shape[1]
 
-    dW = 1 / m * np.dot(dZ, A_prev.T)
+    if lambd is not None:
+        regu = W * lambd / m
+    else:
+        regu = 0
+
+    dW = 1 / m * np.dot(dZ, A_prev.T) + regu
     db = (
         1 / m * np.sum(dZ, axis=1, keepdims=True)
     )  # sum by the rows of dZ with keepdims=True
@@ -50,7 +56,7 @@ def _linear_backward(dZ, cache):
     return dA_prev, dW, db
 
 
-def _linear_activation_forward(A_prev, W, b, activation):
+def _linear_activation_forward(A_prev, W, b, activation, keep_prob=None):
     """
     Implement the forward propagation for the LINEAR->ACTIVATION layer
 
@@ -77,12 +83,19 @@ def _linear_activation_forward(A_prev, W, b, activation):
     else:
         raise NotImplementedError("Only sigmoid, tanh, and relu are implemented")
 
-    cache = (linear_cache, Z)
+    if keep_prob is not None:
+        D = np.random.rand(A.shape[0], A.shape[1])
+        D = (D < keep_prob).astype(int)
+        A = A * D
+        A = A / keep_prob
+        cache = (linear_cache, Z, D)
+    else:
+        cache = (linear_cache, Z)
 
     return A, cache
 
 
-def _linear_activation_backward(dA, cache, activation):
+def _linear_activation_backward(dA, cache, activation, lambd=None, keep_prob=None):
     """
     Implement the backward propagation for the LINEAR->ACTIVATION layer.
 
@@ -96,14 +109,21 @@ def _linear_activation_backward(dA, cache, activation):
     dW -- Gradient of the cost with respect to W (current layer l), same shape as W
     db -- Gradient of the cost with respect to b (current layer l), same shape as b
     """
-    linear_cache, activation_cache = cache
+    # print(cache[2])
+    if keep_prob is not None:
+        linear_cache, activation_cache, D = cache
+    else:
+        linear_cache, activation_cache = cache
+
+    if keep_prob is not None:
+        dA = dA * D / keep_prob
 
     if activation == "relu":
         dZ = ReluBackward().activate(dA, activation_cache)
     elif activation == "sigmoid":
         dZ = SigmoidBackward().activate(dA, activation_cache)
 
-    dA_prev, dW, db = _linear_backward(dZ, linear_cache)
+    dA_prev, dW, db = _linear_backward(dZ, linear_cache, lambd)
 
     return dA_prev, dW, db
 
@@ -177,7 +197,7 @@ class ForwardPropagate(Basepropagate):
 
 
 class BackwardPropagate(Basepropagate):
-    def propagate(self, parameters, cache, X, Y):
+    def propagate(self, parameters, cache, X, Y, lambd=None):
         """
         Implement the backward propagation
 
@@ -200,33 +220,67 @@ class BackwardPropagate(Basepropagate):
         A1 = cache["A1"]
         A2 = cache["A2"]
 
-        # Backward propagation: calculate dW1, db1, dW2, db2.
-        dZ2 = A2 - Y
-        dW2 = 1 / m * np.dot(dZ2, A1.T)
-        db2 = 1 / m * np.sum(dZ2, axis=1, keepdims=True)
-        dZ1 = np.dot(W2.T, dZ2) * (1 - np.power(A1, 2))
-        dW1 = 1 / m * np.dot(dZ1, X.T)
-        db1 = 1 / m * np.sum(dZ1, axis=1, keepdims=True)
+        if lambd is not None:
+            regu1 = W1 * lambd / m
+            regu2 = W2 * lambd / m
+        else:
+            regu1 = 0
+            regu2 = 0
 
-        grads = {"dW1": dW1, "db1": db1, "dW2": dW2, "db2": db2}
+        # Backward propagation: calculate dW1, db1, dW2, db2.
+        if "W3" in parameters:
+            if lambd is not None:
+                regu3 = W3 * lambd / m
+            else:
+                regu3 = 0
+            W3 = parameters["W3"]
+            A3 = cache["A3"]
+            dZ3 = A3 - Y
+            dW3 = 1 / m * np.dot(dZ3, A2.T) + regu3
+            db3 = 1 / m * np.sum(dZ3, axis=1, keepdims=True)
+            dZ2 = np.dot(W3.T, dZ3) * (1 - np.power(A2, 2))
+            dW2 = 1 / m * np.dot(dZ2, X.T) + regu2
+            db2 = 1 / m * np.sum(dZ2, axis=1, keepdims=True)
+            dZ1 = np.dot(W2.T, dZ2) * (1 - np.power(A1, 2))
+            dW1 = 1 / m * np.dot(dZ1, X.T) + regu1
+            db1 = 1 / m * np.sum(dZ1, axis=1, keepdims=True)
+            grads = {
+                "dW1": dW1,
+                "db1": db1,
+                "dW2": dW2,
+                "db2": db2,
+                "dW3": dW3,
+                "db3": db3,
+            }
+        else:
+            dZ2 = A2 - Y
+            dW2 = 1 / m * np.dot(dZ2, A1.T) + regu2
+            db2 = 1 / m * np.sum(dZ2, axis=1, keepdims=True)
+            dZ1 = np.dot(W2.T, dZ2) * (1 - np.power(A1, 2))
+            dW1 = 1 / m * np.dot(dZ1, X.T) + regu1
+            db1 = 1 / m * np.sum(dZ1, axis=1, keepdims=True)
+
+            grads = {"dW1": dW1, "db1": db1, "dW2": dW2, "db2": db2}
 
         return grads
 
 
 class LinearModelForward(Basepropagate):
-    def propagate(self, X, parameters):
+    def propagate(self, X, parameters, keep_prob=None, seed=1):
         """
         Implement forward propagation for the [LINEAR->RELU]*(L-1)->LINEAR->SIGMOID computation
 
         Arguments:
         X -- data, numpy array of shape (input size, number of examples)
         parameters -- output of initialize_parameters_deep()
+        keep_prob - probability of keeping a neuron active during drop-out, scalar
 
         Returns:
         AL -- activation value from the output (last) layer
         caches -- list of caches containing:
                     every cache of linear_activation_forward() (there are L of them, indexed from 0 to L-1)
         """
+        np.random.seed(seed)
 
         caches = []
         A = X
@@ -237,13 +291,13 @@ class LinearModelForward(Basepropagate):
         for l in range(1, L):
             A_prev = A
             A, cache = _linear_activation_forward(
-                A_prev, parameters[f"W{l}"], parameters[f"b{l}"], "relu"
+                A_prev, parameters[f"W{l}"], parameters[f"b{l}"], "relu", keep_prob
             )
             caches.append(cache)
 
         # Implement LINEAR -> SIGMOID. Add "cache" to the "caches" list.
         AL, cache = _linear_activation_forward(
-            A, parameters[f"W{l+1}"], parameters[f"b{l+1}"], "sigmoid"
+            A, parameters[f"W{l+1}"], parameters[f"b{l+1}"], "sigmoid", keep_prob=None
         )
         caches.append(cache)
 
@@ -251,7 +305,7 @@ class LinearModelForward(Basepropagate):
 
 
 class LinearModelBackward(Basepropagate):
-    def propagate(self, AL, Y, caches):
+    def propagate(self, AL, Y, caches, lambd=None, keep_prob=None):
         """
         Implement the backward propagation for the [LINEAR->RELU] * (L-1) -> LINEAR -> SIGMOID group
 
@@ -261,6 +315,8 @@ class LinearModelBackward(Basepropagate):
         caches -- list of caches containing:
                     every cache of linear_activation_forward() with "relu" (it's caches[l], for l in range(L-1) i.e l = 0...L-2)
                     the cache of linear_activation_forward() with "sigmoid" (it's caches[L-1])
+        lambd -- regularization hyperparameter, scalar with default None
+        keep_prob - probability of keeping a neuron active during drop-out, scalar
 
         Returns:
         grads -- A dictionary with the gradients
@@ -279,7 +335,7 @@ class LinearModelBackward(Basepropagate):
         # Lth layer (SIGMOID -> LINEAR) gradients. Inputs: "dAL, current_cache". Outputs: "grads["dAL-1"], grads["dWL"], grads["dbL"]
         current_cache = caches[L - 1]
         dA_prev_temp, dW_temp, db_temp = _linear_activation_backward(
-            dAL, current_cache, "sigmoid"
+            dAL, current_cache, "sigmoid", lambd=lambd, keep_prob=None
         )
         grads["dA" + str(L - 1)] = dA_prev_temp
         grads["dW" + str(L)] = dW_temp
@@ -291,7 +347,11 @@ class LinearModelBackward(Basepropagate):
             # Inputs: "grads["dA" + str(l + 1)], current_cache". Outputs: "grads["dA" + str(l)] , grads["dW" + str(l + 1)] , grads["db" + str(l + 1)]
             current_cache = caches[l]
             dA_prev_temp, dW_temp, db_temp = _linear_activation_backward(
-                dA_prev_temp, current_cache, "relu"
+                dA_prev_temp,
+                current_cache,
+                "relu",
+                lambd=lambd,
+                keep_prob=keep_prob,
             )
             grads["dA" + str(l)] = dA_prev_temp
             grads["dW" + str(l + 1)] = dW_temp

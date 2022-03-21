@@ -35,3 +35,34 @@ def test_compute_cost2():
     ]
 
     single_test(test_cases, Cost().compute)
+
+
+def test_compute_cost_with_regularization():
+    np.random.seed(1)
+    Y = np.array([[1, 1, 0, 1, 0]])
+    W1 = np.random.randn(2, 3)
+    b1 = np.random.randn(2, 1)
+    W2 = np.random.randn(3, 2)
+    b2 = np.random.randn(3, 1)
+    W3 = np.random.randn(1, 3)
+    b3 = np.random.randn(1, 1)
+    parameters = {"W1": W1, "b1": b1, "W2": W2, "b2": b2, "W3": W3, "b3": b3}
+    A3 = np.array([[0.40682402, 0.01629284, 0.16722898, 0.10118111, 0.40682402]])
+    lambd = 0.1
+    expected_output = np.float64(1.7864859451590758)
+    test_cases = [
+        {
+            "name": "shape_check",
+            "input": [A3, Y, parameters, lambd],
+            "expected": expected_output,
+            "error": "Wrong shape",
+        },
+        {
+            "name": "equation_output_check",
+            "input": [A3, Y, parameters, lambd],
+            "expected": expected_output,
+            "error": "Wrong output",
+        },
+    ]
+
+    single_test(test_cases, Cost().compute)

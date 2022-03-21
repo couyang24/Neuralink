@@ -50,7 +50,7 @@ class RandInitialize(Baseinitialize):
 
 
 class RandDeepInitialize(Baseinitialize):
-    def initiate(self, layer_dims, seed=3, deep=False):
+    def initiate(self, layer_dims, seed=3, deep=False, scale=100):
         """
         Arguments:
         layer_dims -- python array (list) containing the dimensions of each layer in our network
@@ -64,18 +64,47 @@ class RandDeepInitialize(Baseinitialize):
         np.random.seed(seed)
         parameters = {}
         L = len(layer_dims)  # number of layers in the network
-        demoninator = 100
+        scale = scale
 
         for l in range(1, L):
             if deep:
-                demoninator = np.sqrt(layer_dims[l - 1])
+                scale = np.sqrt(layer_dims[l - 1])
 
             parameters["W" + str(l)] = (
-                np.random.randn(layer_dims[l], layer_dims[l - 1]) / demoninator
+                np.random.randn(layer_dims[l], layer_dims[l - 1]) / scale
             )
             parameters["b" + str(l)] = np.zeros((layer_dims[l], 1))
 
             assert parameters["W" + str(l)].shape == (layer_dims[l], layer_dims[l - 1])
             assert parameters["b" + str(l)].shape == (layer_dims[l], 1)
+
+        return parameters
+
+
+class HeInitialize(Baseinitialize):
+    def initiate(self, layer_dims, seed=3):
+        """
+        Arguments:
+        layer_dims -- python array (list) containing the size of each layer.
+
+        Returns:
+        parameters -- python dictionary containing your parameters "W1", "b1", ..., "WL", "bL":
+                        W1 -- weight matrix of shape (layers_dims[1], layers_dims[0])
+                        b1 -- bias vector of shape (layers_dims[1], 1)
+                        ...
+                        WL -- weight matrix of shape (layers_dims[L], layers_dims[L-1])
+                        bL -- bias vector of shape (layers_dims[L], 1)
+        """
+
+        np.random.seed(seed)
+        parameters = {}
+        L = len(layer_dims)  # integer representing the number of layers
+
+        for l in range(1, L):
+            # (≈ 2 lines of code)
+            parameters["W" + str(l)] = np.random.randn(
+                layer_dims[l], layer_dims[l - 1]
+            ) * np.sqrt(2.0 / layer_dims[l - 1])
+            parameters["b" + str(l)] = np.zeros((layer_dims[l], 1))
 
         return parameters

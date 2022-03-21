@@ -160,6 +160,9 @@ class DeepNNModel(Basemodel):
         print_cost=False,
         seed=1,
         deep=True,
+        lambd=None,
+        keep_prob=None,
+        parameters=None,
     ):
         """
         Implements a deep neural network: LINEAR->RELU->LINEAR->SIGMOID.
@@ -180,13 +183,21 @@ class DeepNNModel(Basemodel):
         costs = []
 
         # Initialize parameters dictionary, by calling one of the functions you'd previously implemented
-        parameters = RandDeepInitialize().initiate(layers_dims, seed=seed, deep=deep)
+        if parameters is None:
+            parameters = RandDeepInitialize().initiate(
+                layers_dims, seed=seed, deep=deep
+            )
 
         # Loop (gradient descent)
         for i in range(num_iterations):
-            AL, caches = LinearModelForward().propagate(X, parameters)
+            AL, caches = LinearModelForward().propagate(
+                X, parameters, keep_prob=keep_prob
+            )
+
             cost = Cost().compute(AL, Y, deep=True)
-            grads = LinearModelBackward().propagate(AL, Y, caches)
+            grads = LinearModelBackward().propagate(
+                AL, Y, caches, lambd=lambd, keep_prob=keep_prob
+            )
             parameters = Parameters().update(
                 parameters, grads, learning_rate=learning_rate
             )
@@ -201,7 +212,7 @@ class DeepNNModel(Basemodel):
 
         return parameters, costs
 
-    def predict(self, X, y=None, parameters=None):
+    def predict(self, X, y=None, parameters=None, keep_prob=None):
         """
         This function is used to predict the results of a  L-layer neural network.
 
@@ -222,7 +233,9 @@ class DeepNNModel(Basemodel):
         p = np.zeros((1, m))
 
         # Forward propagation
-        probas, caches = LinearModelForward().propagate(X, parameters)
+        probas, caches = LinearModelForward().propagate(
+            X, parameters, keep_prob=keep_prob
+        )
 
         # convert probas to 0/1 predictions
         for i in range(0, probas.shape[1]):
