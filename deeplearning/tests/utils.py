@@ -106,6 +106,13 @@ def shape_check(expected_output, target_output, error):
 
 def single_test(test_cases, target):
     success = 0
+
+    # print(test_cases[0]["input"])
+    # print('-'*50)
+    # print(test_cases[0]["expected"])
+    # print('-'*100)
+    # print(target(*test_cases[0]["input"]))
+
     for test_case in test_cases:
         try:
             if test_case["name"] == "datatype_check":
@@ -136,6 +143,10 @@ def single_test(test_cases, target):
 
 def multiple_test(test_cases, target):
     success = 0
+
+    print(test_cases[0]["input"])
+    print(target(*test_cases[0]["input"]))
+
     for test_case in test_cases:
         try:
             target_answer = target(*test_case["input"])

@@ -1,7 +1,12 @@
 """test initiation"""
 import numpy as np
 
-from deeplearning.initiation import RandDeepInitialize, RandInitialize, ZeroInitialize
+from deeplearning.initiation import (
+    HeInitialize,
+    RandDeepInitialize,
+    RandInitialize,
+    ZeroInitialize,
+)
 
 from .utils import multiple_test
 
@@ -171,3 +176,75 @@ def test_randdeepinitialize():
     ]
 
     multiple_test(test_cases, RandDeepInitialize().initiate)
+
+
+def test_initialize_parameters_random_deep():
+    layer_dims = [3, 2, 1]
+    expected_output = {
+        "W1": np.array(
+            [
+                [17.88628473, 4.36509851, 0.96497468],
+                [-18.63492703, -2.77388203, -3.54758979],
+            ]
+        ),
+        "b1": np.array([[0.0], [0.0]]),
+        "W2": np.array([[-0.82741481, -6.27000677]]),
+        "b2": np.array([[0.0]]),
+    }
+
+    test_cases = [
+        {
+            "name": "datatype_check",
+            "input": [layer_dims, 3, False, 0.1],
+            "expected": expected_output,
+            "error": "Datatype mismatch",
+        },
+        {
+            "name": "shape_check",
+            "input": [layer_dims, 3, False, 0.1],
+            "expected": expected_output,
+            "error": "Wrong shape",
+        },
+        {
+            "name": "equation_output_check",
+            "input": [layer_dims, 3, False, 0.1],
+            "expected": expected_output,
+            "error": "Wrong output",
+        },
+    ]
+
+    multiple_test(test_cases, RandDeepInitialize().initiate)
+
+
+def test_initialize_parameters_he():
+
+    layer_dims = [3, 1, 2]
+    expected_output = {
+        "W1": np.array([[1.46040903, 0.3564088, 0.07878985]]),
+        "b1": np.array([[0.0]]),
+        "W2": np.array([[-2.63537665], [-0.39228616]]),
+        "b2": np.array([[0.0], [0.0]]),
+    }
+
+    test_cases = [
+        {
+            "name": "datatype_check",
+            "input": [layer_dims],
+            "expected": expected_output,
+            "error": "Datatype mismatch",
+        },
+        {
+            "name": "shape_check",
+            "input": [layer_dims],
+            "expected": expected_output,
+            "error": "Wrong shape",
+        },
+        {
+            "name": "equation_output_check",
+            "input": [layer_dims],
+            "expected": expected_output,
+            "error": "Wrong output",
+        },
+    ]
+
+    multiple_test(test_cases, HeInitialize().initiate)
