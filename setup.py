@@ -6,10 +6,10 @@ from setuptools import setup
 def _read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-exec(open("deeplearning/_version.py").read())
+exec(open("neuralink/_version.py").read())
 
 setup(
-    name="deeplearning",
+    name="neuralink",
     version=__version__,
     author="Chengran (Owen) Ouyang",
     author_email="chengranouyang@gmail.com",
@@ -18,7 +18,7 @@ setup(
         " provides basic DeepLearning tools."
     ),
     license="Apache License",
-    keywords="DeepLearning documentation tutorial",
-    packages=["deeplearning"],
+    keywords="Neuralink documentation tutorial",
+    packages=["neuralink"],
     long_description=_read("README.md"),
 )
