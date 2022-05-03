@@ -17,7 +17,7 @@ body:
     attributes:
       label: Location of the documentation
       description: >
-        Please provide the location of the documentation, e.g. "neuralink.fire.Firstflame" or the
+        Please provide the location of the documentation, e.g. "neuralink.modelling" or the
         URL of the documentation
     validations:
       required: true

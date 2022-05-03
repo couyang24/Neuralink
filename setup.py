@@ -14,11 +14,11 @@ setup(
     author="Chengran (Owen) Ouyang",
     author_email="chengranouyang@gmail.com",
     description=(
-        "This is a learning notes from deeplearning.AI at Coursera, which also"
-        " provides basic DeepLearning tools."
+        "Neuralink provides deeplearning modelling tools and is based on the methods from deeplearning.AI at Coursera."
     ),
     license="Apache License",
     keywords="Neuralink documentation tutorial",
     packages=["neuralink"],
     long_description=_read("README.md"),
+    long_description_content_type="text/markdown",
 )
