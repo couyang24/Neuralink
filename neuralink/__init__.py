@@ -1,7 +1,8 @@
 from neuralink._version import __version__
 from .logger import get_logger
 
-print("""
+print(
+    """
 Welcome to Neuralink!
             .
             ! r,|`
@@ -14,7 +15,8 @@ Welcome to Neuralink!
              1r |.
             |'L" |
              '
-""")
+"""
+)
 
 LOG = get_logger(__name__)
-LOG.info(f'Installing Neuralink Version: {__version__}')
+LOG.info(f"Installing Neuralink Version: {__version__}")

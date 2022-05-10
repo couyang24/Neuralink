@@ -82,7 +82,7 @@ class Basemodel(ABC):
         super().__init__()
 
     @abstractmethod
-    def train(self):
+    def fit(self):
         pass
 
     @abstractmethod

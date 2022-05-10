@@ -35,7 +35,7 @@
 # First import all the packages that you will need during this assignment.
 #
 # - [numpy](https://www.numpy.org/) is the fundamental package for scientific computing with Python.
-# - [sklearn](http://scikit-learn.org/stable/) provides simple and efficient tools for data mining and data analysis. 
+# - [sklearn](http://scikit-learn.org/stable/) provides simple and efficient tools for data mining and data analysis.
 # - [matplotlib](http://matplotlib.org) is a library for plotting graphs in Python.
 # - testCases provides some test examples to assess the correctness of your functions
 # - planar_utils provide various useful functions used in this assignment
@@ -105,6 +105,7 @@ def load_extra_datasets():
 
 # -
 
+
 def plot_decision_boundary(model, X, y):
     # Set min and max values and give it some padding
     x_min, x_max = X[0, :].min() - 1, X[0, :].max() + 1
@@ -123,12 +124,12 @@ def plot_decision_boundary(model, X, y):
 
 
 # <a name='2'></a>
-# # 2 - Load the Dataset 
+# # 2 - Load the Dataset
 
 X, Y = load_planar_dataset()
 
 # Visualize the data:
-plt.scatter(X[0, :], X[1, :], c=Y, s=40, cmap=plt.cm.Spectral);
+plt.scatter(X[0, :], X[1, :], c=Y, s=40, cmap=plt.cm.Spectral)
 
 # <a name='3'></a>
 # ## 3 - Simple Logistic Regression
@@ -137,7 +138,7 @@ plt.scatter(X[0, :], X[1, :], c=Y, s=40, cmap=plt.cm.Spectral);
 
 # Train the logistic regression classifier
 clf = sklearn.linear_model.LogisticRegressionCV()
-clf.fit(X.T, Y.T);
+clf.fit(X.T, Y.T)
 
 # +
 # Plot the decision boundary for logistic regression
@@ -185,17 +186,17 @@ print(
 # **Mathematically**:
 #
 # For one example $x^{(i)}$:
-# $$z^{[1] (i)} =  W^{[1]} x^{(i)} + b^{[1]}\tag{1}$$ 
+# $$z^{[1] (i)} =  W^{[1]} x^{(i)} + b^{[1]}\tag{1}$$
 # $$a^{[1] (i)} = \tanh(z^{[1] (i)})\tag{2}$$
 # $$z^{[2] (i)} = W^{[2]} a^{[1] (i)} + b^{[2]}\tag{3}$$
 # $$\hat{y}^{(i)} = a^{[2] (i)} = \sigma(z^{ [2] (i)})\tag{4}$$
 # $$y^{(i)}_{prediction} = \begin{cases} 1 & \mbox{if } a^{[2](i)} > 0.5 \\ 0 & \mbox{otherwise } \end{cases}\tag{5}$$
 #
-# Given the predictions on all the examples, you can also compute the cost $J$ as follows: 
+# Given the predictions on all the examples, you can also compute the cost $J$ as follows:
 # $$J = - \frac{1}{m} \sum\limits_{i = 0}^{m} \large\left(\small y^{(i)}\log\left(a^{[2] (i)}\right) + (1-y^{(i)})\log\left(1- a^{[2] (i)}\right)  \large  \right) \small \tag{6}$$
 #
 # **Reminder**: The general methodology to build a Neural Network is to:
-#     1. Define the neural network structure ( # of input units,  # of hidden units, etc). 
+#     1. Define the neural network structure ( # of input units,  # of hidden units, etc).
 #     2. Initialize the model's parameters
 #     3. Loop:
 #         - Implement forward propagation
@@ -265,6 +266,7 @@ tunning(X, Y)
 # <a name='7'></a>
 # ## 7- Performance on other datasets
 
+
 def choose_df(dataset="noisy_moons"):
     # Datasets
     (
@@ -298,5 +300,3 @@ def choose_df(dataset="noisy_moons"):
 X, Y = choose_df(dataset="blobs")
 
 tunning(X, Y)
-
-

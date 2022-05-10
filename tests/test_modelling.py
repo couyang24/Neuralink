@@ -28,8 +28,8 @@ def test_logit_model():
     x_test = np.random.randn(4, 3)
     y_test = np.array([0, 1, 0])
 
-    model = LogitModel()
-    model.train(X, Y, num_iterations=50, learning_rate=0.01)
+    model = LogitModel(num_iterations=50, learning_rate=0.01)
+    model.fit(X, Y)
     d = model.predict(x_test, y_test)
 
     assert (
@@ -66,17 +66,6 @@ def test_logit_model():
         d["Y_prediction_test"], expected_output["Y_prediction_test"]
     ), f"Wrong values for d['Y_prediction_test']. {d['Y_prediction_test']} != {expected_output['Y_prediction_test']}"
 
-    assert (
-        type(d["Y_prediction_train"]) == np.ndarray
-    ), f"Wrong type for d['Y_prediction_train']. {type(d['Y_prediction_train'])} != np.ndarray"
-    assert d["Y_prediction_train"].shape == (
-        1,
-        X.shape[1],
-    ), f"Wrong shape for d['Y_prediction_train']. {d['Y_prediction_train'].shape} != {(1, X.shape[1])}"
-    assert np.allclose(
-        d["Y_prediction_train"], expected_output["Y_prediction_train"]
-    ), f"Wrong values for d['Y_prediction_train']. {d['Y_prediction_train']} != {expected_output['Y_prediction_train']}"
-
 
 def test_nn_model_train():
     np.random.seed(1)
@@ -99,7 +88,7 @@ def test_nn_model_train():
 
     np.random.seed(3)
     nnmodel = NNModel()
-    nnmodel.train(X, Y, n_h, print_cost=False)
+    nnmodel.fit(X, Y, n_h, print_cost=False)
     output = nnmodel.parameters
 
     assert (
@@ -345,7 +334,7 @@ def test_deep_nn_model_train1():
         },
     ]
 
-    multiple_test(test_cases, DeepNNModel().train)
+    multiple_test(test_cases, DeepNNModel().fit)
 
 
 def test_deep_nn_model_train2():
@@ -600,4 +589,4 @@ def test_deep_nn_model_train2():
         },
     ]
 
-    multiple_test(test_cases, DeepNNModel().train)
+    multiple_test(test_cases, DeepNNModel().fit)

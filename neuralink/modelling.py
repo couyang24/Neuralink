@@ -14,12 +14,16 @@ from neuralink.propagation import (
     LinearModelBackward,
     LinearModelForward,
 )
+from firelink.fire import Firstflame
 
 
-class LogitModel(Basemodel):
-    def train(
-        self, X_train, Y_train, num_iterations=2000, learning_rate=0.5, print_cost=False
-    ):
+class LogitModel(Basemodel, Firstflame):
+    def __init__(self, num_iterations=2000, learning_rate=0.5, print_cost=False):
+        self.num_iterations = num_iterations
+        self.learning_rate = learning_rate
+        self.print_cost = print_cost
+
+    def fit(self, X, y):
         """
         Builds the logistic regression model
 
@@ -31,22 +35,23 @@ class LogitModel(Basemodel):
         print_cost -- Set to True to print the cost every 100 iterations
         """
         # initialize parameters with zeros
-        w, b = ZeroInitialize().initiate(X_train.shape[0])
+        w, b = ZeroInitialize().initiate(X.shape[0])
 
         # Gradient descent
         params, grads, costs = LogitOptimize().optimize(
-            w, b, X_train, Y_train, num_iterations, learning_rate, print_cost
+            w, b, X, y, self.num_iterations, self.learning_rate, self.print_cost
         )
 
         self.params = params
         self.grads = grads
         self.costs = costs
-        self.X_train = X_train
-        self.Y_train = Y_train
-        self.learning_rate = learning_rate
-        self.num_iterations = num_iterations
 
-    def predict(self, X_test, Y_test, print_cost=False):
+        return self
+
+    def transform(self, X, y=None):
+        return X
+
+    def predict(self, X_test, Y_test):
         """
         Predict with the logistic regression model
 
@@ -63,16 +68,10 @@ class LogitModel(Basemodel):
         b = self.params["b"]
 
         # Predict test/train set examples
-        Y_prediction_train = LogitPredict().predict(w, b, self.X_train)
         Y_prediction_test = LogitPredict().predict(w, b, X_test)
 
         # Print train/test Errors
-        if print_cost:
-            print(
-                "train accuracy: {} %".format(
-                    100 - np.mean(np.abs(Y_prediction_train - self.Y_train)) * 100
-                )
-            )
+        if self.print_cost:
             print(
                 "test accuracy: {} %".format(
                     100 - np.mean(np.abs(Y_prediction_test - Y_test)) * 100
@@ -82,7 +81,6 @@ class LogitModel(Basemodel):
         d = {
             "costs": self.costs,
             "Y_prediction_test": Y_prediction_test,
-            "Y_prediction_train": Y_prediction_train,
             "w": w,
             "b": b,
             "learning_rate": self.learning_rate,
@@ -93,7 +91,7 @@ class LogitModel(Basemodel):
 
 
 class NNModel(Basemodel):
-    def train(self, X, Y, n_h, num_iterations=10000, print_cost=False, seed=3):
+    def fit(self, X, Y, n_h, num_iterations=10000, print_cost=False, seed=3):
         """
         Arguments:
         X -- dataset of shape (2, number of examples)
@@ -150,7 +148,7 @@ class NNModel(Basemodel):
 
 
 class DeepNNModel(Basemodel):
-    def train(
+    def fit(
         self,
         X,
         Y,

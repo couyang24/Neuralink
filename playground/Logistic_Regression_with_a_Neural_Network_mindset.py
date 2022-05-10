@@ -86,7 +86,7 @@ train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes = load_datas
 
 # We added "_orig" at the end of image datasets (train and test) because we are going to preprocess them. After preprocessing, we will end up with train_set_x and test_set_x (the labels train_set_y and test_set_y don't need any preprocessing).
 #
-# Each line of your train_set_x_orig and test_set_x_orig is an array representing an image. You can visualize an example by running the following code. Feel free also to change the `index` value and re-run to see other images. 
+# Each line of your train_set_x_orig and test_set_x_orig is an array representing an image. You can visualize an example by running the following code. Feel free also to change the `index` value and re-run to see other images.
 
 # Example of a picture
 index = 2
@@ -99,7 +99,7 @@ print(
     + "' picture."
 )
 
-# Many software bugs in deep learning come from having matrix/vector dimensions that don't fit. If you can keep your matrix/vector dimensions straight you will go a long way toward eliminating many bugs. 
+# Many software bugs in deep learning come from having matrix/vector dimensions that don't fit. If you can keep your matrix/vector dimensions straight you will go a long way toward eliminating many bugs.
 #
 # <a name='ex-1'></a>
 # Find the values for:
@@ -132,7 +132,7 @@ print("test_set_y shape: " + str(test_set_y.shape))
 #
 # Reshape the training and test data sets so that images of size (num_px, num_px, 3) are flattened into single vectors of shape (num\_px $*$ num\_px $*$ 3, 1).
 #
-# A trick when you want to flatten a matrix X of shape (a,b,c,d) to a matrix X_flatten of shape (b$*$c$*$d, a) is to use: 
+# A trick when you want to flatten a matrix X of shape (a,b,c,d) to a matrix X_flatten of shape (b$*$c$*$d, a) is to use:
 # ```python
 # X_flatten = X.reshape(X.shape[0], -1).T      # X.T is the transpose of X
 # ```
@@ -161,7 +161,7 @@ print("test_set_y shape: " + str(test_set_y.shape))
 #
 # One common preprocessing step in machine learning is to center and standardize your dataset, meaning that you substract the mean of the whole numpy array from each example, and then divide each example by the standard deviation of the whole numpy array. But for picture datasets, it is simpler and more convenient and works almost as well to just divide every row of the dataset by 255 (the maximum value of a pixel channel).
 #
-# <!-- During the training of your model, you're going to multiply weights and add biases to some initial inputs in order to observe neuron activations. Then you backpropogate with the gradients to train the model. But, it is extremely important for each feature to have a similar range such that our gradients don't explode. You will see that more in detail later in the lectures. !--> 
+# <!-- During the training of your model, you're going to multiply weights and add biases to some initial inputs in order to observe neuron activations. Then you backpropogate with the gradients to train the model. But, it is extremely important for each feature to have a similar range such that our gradients don't explode. You will see that more in detail later in the lectures. !-->
 #
 # Let's standardize our dataset.
 
@@ -187,7 +187,7 @@ test_set_x = test_set_x_flatten / 255.0
 #
 # For one example $x^{(i)}$:
 # $$z^{(i)} = w^T x^{(i)} + b \tag{1}$$
-# $$\hat{y}^{(i)} = a^{(i)} = sigmoid(z^{(i)})\tag{2}$$ 
+# $$\hat{y}^{(i)} = a^{(i)} = sigmoid(z^{(i)})\tag{2}$$
 # $$ \mathcal{L}(a^{(i)}, y^{(i)}) =  - y^{(i)}  \log(a^{(i)}) - (1-y^{(i)} )  \log(1-a^{(i)})\tag{3}$$
 #
 # The cost is then computed by summing over all training examples:
@@ -222,14 +222,14 @@ plt.show()
 # <a name='4'></a>
 # ## 4 - Further analysis
 #
-# Let's analyze it further, and examine possible choices for the learning rate $\alpha$. 
+# Let's analyze it further, and examine possible choices for the learning rate $\alpha$.
 
 # #### Choice of learning rate ####
 #
 # **Reminder**:
 # In order for Gradient Descent to work you must choose the learning rate wisely. The learning rate $\alpha$  determines how rapidly we update the parameters. If the learning rate is too large we may "overshoot" the optimal value. Similarly, if it is too small we will need too many iterations to converge to the best values. That's why it is crucial to use a well-tuned learning rate.
 #
-# Let's compare the learning curve of our model with several choices of learning rates. Run the cell below. This should take about 1 minute. Feel free also to try different values than the three we have initialized the `learning_rates` variable to contain, and see what happens. 
+# Let's compare the learning curve of our model with several choices of learning rates. Run the cell below. This should take about 1 minute. Feel free also to try different values than the three we have initialized the `learning_rates` variable to contain, and see what happens.
 
 # +
 learning_rates = [0.01, 0.001, 0.0001]
@@ -262,6 +262,7 @@ plt.show()
 # <a name='5'></a>
 # ## 5 - Test with my own image ##
 
+
 def test_image(my_image):
     # We preprocess the image to fit your algorithm.
     fname = "images/" + my_image
@@ -285,5 +286,3 @@ def test_image(my_image):
 test_image(my_image="cat_in_iran.jpg")
 
 test_image(my_image="1561040958920.jpg")
-
-

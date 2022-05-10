@@ -6,6 +6,7 @@ from setuptools import setup
 def _read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 exec(open("neuralink/_version.py").read())
 
 setup(

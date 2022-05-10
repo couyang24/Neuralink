@@ -1,4 +1,5 @@
 black
+firelink
 flake8
 h5py
 isort

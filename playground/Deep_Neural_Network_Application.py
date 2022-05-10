@@ -186,13 +186,13 @@ print("test_x's shape: " + str(test_x.shape))
 # - A 2-layer neural network
 # - An L-layer deep neural network
 #
-# Then, compare the performance of these models, and try out some different values for $L$. 
+# Then, compare the performance of these models, and try out some different values for $L$.
 #
-# - The input is a (64,64,3) image which is flattened to a vector of size $(12288,1)$. 
+# - The input is a (64,64,3) image which is flattened to a vector of size $(12288,1)$.
 # - The corresponding vector: $[x_0,x_1,...,x_{12287}]^T$ is then multiplied by the weight matrix $W^{[1]}$ of size $(n^{[1]}, 12288)$.
 # - Then, add a bias term and take its relu to get the following vector: $[a_0^{[1]}, a_1^{[1]},..., a_{n^{[1]}-1}^{[1]}]^T$.
 # - Repeat the same process.
-# - Multiply the resulting vector by $W^{[2]}$ and add the intercept (bias). 
+# - Multiply the resulting vector by $W^{[2]}$ and add the intercept (bias).
 # - Finally, take the sigmoid of the result. If it's greater than 0.5, classify it as a cat.
 #
 # <a name='3-2'></a>
@@ -213,7 +213,7 @@ print("test_x's shape: " + str(test_x.shape))
 #     a. Forward propagation
 #     b. Compute cost function
 #     c. Backward propagation
-#     d. Update parameters (using parameters, and grads from backprop) 
+#     d. Update parameters (using parameters, and grads from backprop)
 # 3. Use trained parameters to predict labels
 
 # <a name='4'></a>
@@ -277,21 +277,22 @@ pred_test = model.predict(test_x, test_y, parameters)
 # <a name='6'></a>
 # ##  6 - Results Analysis
 #
-# First, take a look at some images the L-layer model labeled incorrectly. This will show a few mislabeled images. 
+# First, take a look at some images the L-layer model labeled incorrectly. This will show a few mislabeled images.
 
 print_mislabeled_images(classes, test_x, test_y, pred_test)
 
 
-# **A few types of images the model tends to do poorly on include:** 
+# **A few types of images the model tends to do poorly on include:**
 # - Cat body in an unusual position
 # - Cat appears against a background of a similar color
 # - Unusual cat color and species
 # - Camera Angle
 # - Brightness of the picture
-# - Scale variation (cat is very large or small in image) 
+# - Scale variation (cat is very large or small in image)
 
 # <a name='7'></a>
 # ## 7 - Test with images
+
 
 def test_image(my_image, parameters):
 
@@ -320,5 +321,3 @@ test_image("my_image.jpg", parameters)
 test_image("my_image2.jpg", parameters)
 
 test_image("1561040958920.jpg", parameters)
-
-
